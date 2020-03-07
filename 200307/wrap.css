@@ -1,0 +1,25 @@
+.wrap {
+    width: 900px;
+    margin: auto;
+}
+
+.jumbotron {
+    text-align: center;
+    font-family: 'Single Day', cursive;
+}
+
+.card-title {
+    color: pink;
+    font-family: 'Poor Story', cursive;
+    text-align: center;
+}
+
+.form-post {
+    max-width: 500px;
+    padding: 2rem;
+    margin: 2rem auto;
+    border-color: #e9ecef;
+    border-radius: 0.3rem;
+    border: solid;
+    display: block;
+}
