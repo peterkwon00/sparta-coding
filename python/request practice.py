@@ -11,6 +11,8 @@ data = requests.get('https://movie.naver.com/movie/sdb/rank/rmovie.nhn?sel=pnt&d
 soup = BeautifulSoup(data.text, 'html.parser')
 
 titles = soup.select('#old_content > table > tbody > tr .title > div > a')
-tt = soup.select('#old_content > table > tbody > tr > td.title > div > a')
-for title in tt:
-    print(title.text)
+points = soup.select('#old_content > table > tbody > tr > td.point')
+
+for item in zip(titles, points):
+    print(item[0].text, item[1].text)
+ 
