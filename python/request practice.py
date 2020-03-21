@@ -15,4 +15,3 @@ points = soup.select('#old_content > table > tbody > tr > td.point')
 
 for item in zip(titles, points):
     print(item[0].text, item[1].text)
- 
