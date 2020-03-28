@@ -13,12 +13,34 @@ def home():
 ## API 역할을 하는 부분
 @app.route('/orders', methods=['POST'])
 def write_order():
+    name_receive = request.form['name']
+    count_receive = request.form['count']
+    address_receive = request.form['address']
+    phone_receive = request.form['phone']
+    # 2. DB에 정보 삽입하기
+    doc = {
+        'name': name_receive,
+        'count': count_receive,
+        'address': address_receive,
+        'phone': phone_receive
+    }
+    db.orders.insert_one(doc)
 
-    return jsonify({'result': 'success', 'msg': '주문이 성공적으로 완되었습니다.'})
+    return jsonify({'result': 'success', 'msg': '주문이 성공적으로 완료되었습니다.'})
 
 @app.route('/orders', methods=['GET'])
 def read_orders():
+    send_data = []
+    all_orders = list(db.orders.find())
+    for order in all_orders:
+        send_data.append({
+            'name' : order['name'],
+            'count' : order['count'],
+            'address' : order['address'],
+            'phone': order['phone']
+        })
     return jsonify({'result':'success', 'data': send_data, 'msg': '이 요청은 GET!'})
+
 
 
 if __name__ == '__main__':
