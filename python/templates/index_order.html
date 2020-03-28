@@ -65,7 +65,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/orders',
-                data: {'name' : name, 'count' : count, 'address' : address, 'phone' : 'phone'},
+                data: {'name' : name, 'count' : count, 'address' : address, 'phone' : phone},
                 success: function (response) {
                     if (response['result'] == 'success') {
                         alert(response['msg']);
