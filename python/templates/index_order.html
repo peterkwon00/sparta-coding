@@ -26,6 +26,10 @@
 
     <!-- java script -->
     <script type="text/javascript">
+    $(document).ready(function () {
+            $('#orders-box').html('');
+            listing();
+        });
 
         function isCellPhone(p) {
             var regExp = /^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})[-][0-9]{3,4}[-][0-9]{4}$/;
@@ -58,6 +62,17 @@
                 alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
                 return
             }
+            $.ajax({
+                type: 'POST',
+                url: '/orders',
+                data: {'name' : name, 'count' : count, 'address' : address, 'phone' : 'phone'},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        window.location.reload();
+                    }
+                }
+            });
         }
 
     </script>
@@ -81,7 +96,6 @@
         }
 
 
-
         .input-group {
             width: 500px;
             margin: auto;
@@ -101,10 +115,10 @@
         </div>
         <br>
         <div>
-            <h2 class="title"> [이베리쿡] 스페인산 이베리코 목살
+             <h2 class="title"> [이베리쿡] 스페인산 이베리코 목살
                 <span style="font-size:medium; color:dimgrey;">500g</span>
                 <span style="font-size: large; color: black;">17,000원</span>
-                <h2>
+                </h2>
         </div>
         <div class="info">
             <P> <span style="font-size: medium; color: lightslategrey;">
@@ -115,17 +129,13 @@
 
         </div>
         <br>
-
-
-
         <div class="order">
             <P>
                 <h3>주문하기</h3>
-            </P>
 
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">주문자</span>
+                    <span class="input-group-text" id="inputGroup-sizing-default0">주문자</span>
                 </div>
                 <input type="text" id="order_name" class="form-control" placeholder="이름을 입력하세요"
                     aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
@@ -145,7 +155,7 @@
             <br>
             <div class="input-group">
                 <div class="input-group-prepend">
-                    <span class="input-group-text" id="inputGroup-sizing-default">배송지</span>
+                    <span class="input-group-text" id="inputGroup-sizing-default1">배송지</span>
                 </div>
                 <input type="text" id="order_address" class="form-control" placeholder="배송받을 주소를 입력하세요"
                     aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
@@ -164,6 +174,26 @@
                 담기</button>
             <button onclick="order()" type="button" class="btn btn-outline-secondary"
                 style="margin-top: 10px; margin-bottom: 30px; color: #5f0080;">주문하기</button>
+        </div>
+        <div class="orders">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">주문자</th>
+                        <th scope="col">수량</th>
+                        <th scope="col">배송지</th>
+                        <th scope="col">연락처</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-box">
+                    <tr>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                        <td>@mdo</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 
