@@ -8,7 +8,7 @@ db = client.dbpeter                      # 'dbsparta'라는 이름의 db를 만�
 ## HTML을 주는 부분
 @app.route('/')
 def home():
-    return render_template('index_order.html')
+    return render_template('4th_hw_index_order.html')
 
 ## API 역할을 하는 부분
 @app.route('/orders', methods=['POST'])
