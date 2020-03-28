@@ -74,6 +74,43 @@
                 }
             });
         }
+        function listing() {
+            // 1. 리뷰 목록을 서버에 요청하기
+
+            // 2. 요청 성공 여부 확인하기
+            // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
+            $.ajax({
+                type: "GET",
+                url: "/orders",
+                data: {},
+                success: function (response) {
+                    if (response['result'] == 'success') {
+                        alert(response['msg']);
+                        let orders = response['data'];
+
+                        for (i=0; i < orders.length; i++) {
+                        let name = orders[i]['name'];
+                        let count = orders[i]['count'];
+                        let address = orders[i]['address'];
+                        let phone = orders[i]['phone'];
+                        make_card(name, count, address, phone)}
+                        // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
+                    } else {
+                        alert('주문이 기록되지 않습니다');
+                    }
+                }
+            });
+        }
+
+        function make_card(name, count, address, phone) {
+            let temp_html = '<tr>\
+                                <td>'+ name + '</td>\
+                                <td>'+ count + '</td>\
+                                <td>'+ address + '</td>\
+                                <td>'+ phone + '</td>\
+                            </tr>';
+            $('#orders-box').append(temp_html);
+        }
 
     </script>
 
