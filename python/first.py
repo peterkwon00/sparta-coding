@@ -61,8 +61,4 @@ def get_mail(s):
         return s.split('@')[1].split('.')[0]
 print(get_mail(a))
 
-a = ['사과','감','감','배','포도','포도','딸기','포도','감','수박','딸기']
-def count_list(a_list):
-    basket = {'사과':0, '감'=0, '포도'=0 }
-    for count in a_list :
-        return
+
