@@ -1,212 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <!-- Webpage Title -->
-    <title>나홀로 책 리뷰 | 스파르타코딩클럽</title>
+    <title>Hello, world!</title>
 
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
 
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-        crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-        crossorigin="anonymous"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- 구글폰트 -->
-    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Stylish&display=swap"
+      rel="stylesheet"
+    />
 
-    <script type="text/javascript">
+    <script>
+      function openclose() {
+        if ($("#posting-box").css("display") == "block") {
+          $("#posting-box").hide();
+          $("#btn-posting-box").text("포스팅 박스 열기");
+        } else {
+          $("#posting-box").show();
+          $("#btn-posting-box").text("포스팅 박스 닫기");
+        }
+      }
 
-        $(document).ready(function () {
-            $('#orders-box').html('');
-            listing();
+      $(document).ready(function () {
+        $("#cards-box").html("");
+        listing();
+      });
+
+      function listing() {
+        $.ajax({
+          type: "GET",
+          url: "/memo",
+          data: {},
+          success: function (response) {
+            if (response["result"] == "success") {
+              let api = response;
+              let r = api["data"];
+
+              for (let i = 0; i < r.length; i++) {
+                let image = r[i]["image"];
+                let comment = r[i]["comment"];
+                let desc = r[i]["desc"];
+                let title = r[i]["title"];
+                let url = r[i]["url"];
+
+                $("#cards-box").append(
+                  `<div class="card">
+                <img class="card-img-top"
+                    src="${image}"
+                    alt="Card image cap">
+                <div class="card-body">
+                    <a href="${URL}" class="card-title">${title}</a>
+                    <p class="card-text">${desc}</p>
+                    <p class="card-text comment">${comment}</p>
+                </div>
+            </div>`
+                );
+              }
+
+              alert(response["msg"]);
+            } else {
+              alert("DB가 비어있습니다.");
+            }
+          },
         });
+      }
 
-        function make_review() {
-            // 1. 제목, 저자, 리뷰 내용을 가져옵니다.
-            // 2. 제목, 저자, 리뷰 중 하나라도 입력하지 않았을 경우 alert를 띄웁니다.
-            // 3. POST /reviews 에 저장을 요청합니다.
-            let btitle = $('#title').val()
-            let bauthor = $('#author').val()
-            let breview = $('#review').val()
+      function posting() {
+        let myurl = $("#posting-url").val();
+        let mycomment = $("#posting-comment").val();
 
-            if( btitle == ''){
-            alert('제목을 입력해주세요')
-                $('#title').focus()
-                return
-                }
-            else if( bauthor == '') {
-            alert('저자를 입력해주세요')
-                $('#author').focus()
-                return
+        $.ajax({
+          type: "POST",
+          url: "/memo",
+          data: { url_give: myurl, comment_give: mycomment },
+          success: function (response) {
+            // 성공하면
+            if (response["result"] == "success") {
+              alert(response["msg"]);
+              $("#cards-box").html("");
+              listing();
             }
-            else if( breview == '') {
-            alert('리뷰를 입력해주세요')
-                $('#review').focus()
-                return
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: '/reviews',
-                data: {'title' : btitle, 'author' : bauthor, 'review' : breview},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        alert(response['msg']);
-                        window.location.reload();
-                    }
-                }
-            });
-        }
-
-        function listing() {
-            // 1. 리뷰 목록을 서버에 요청하기
-
-            // 2. 요청 성공 여부 확인하기
-            // 3. 요청 성공했을 때 리뷰를 올바르게 화면에 나타내기
-            $.ajax({
-                type: "GET",
-                url: "/reviews",
-                data: {},
-                success: function (response) {
-                    if (response['result'] == 'success') {
-                        alert(response['msg']);
-                        let reviews = response['data'];
-
-                        for (i=0; i < reviews.length; i++) {
-                        let title = reviews[i]['title'];
-                        let author = reviews[i]['author'];
-                        let review = reviews[i]['review'];
-                        make_card(title, author, review)}
-                        // 2. 성공했을 때 리뷰를 올바르게 화면에 나타내기
-                    } else {
-                        alert('리뷰를 받아오지 못했습니다');
-                    }
-                }
-            });
-        }
-
-        function make_card(title, author, review) {
-            let temp_html = '<tr>\
-                                <td>'+ title + '</td>\
-                                <td>'+ author + '</td>\
-                                <td>'+ review + '</td>\
-                            </tr>';
-            $('#orders-box').append(temp_html);
-        }
-
-        function is_long(obj) {
-            let content = $(obj).val();
-            if (content.length > 140) {
-                alert('리뷰는 140자까지 기록할 수 있습니다.');
-                $(obj).val(content.substring(0, content.length - 1));
-            }
-        }
+          },
+        });
+      }
     </script>
 
+    <!-- style -->
     <style type="text/css">
-        * {
-            font-family: 'Do Hyeon', sans-serif;
-        }
+      * {
+        font-family: "Stylish", sans-serif;
+      }
 
-        .wrap {
-            width: 500px;
-            margin: auto;
-        }
+      .wrap {
+        width: 900px;
+        margin: auto;
+      }
 
-        .img {
-            background-image: url('https://previews.123rf.com/images/maxxyustas/maxxyustas1511/maxxyustas151100002/47858355-education-concept-books-and-textbooks-on-the-bookshelf-3d.jpg');
-            background-size: cover;
-            background-position: center;
-            width: 500px;
-            height: 300px;
-        }
+      .comment {
+        color: blue;
+        font-weight: bold;
+      }
 
-        .info {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
+      .form-post {
+        max-width: 500px;
+        padding: 2rem;
+        margin: 2rem auto;
+        border-color: #e9ecef;
+        border-radius: 0.3rem;
+        border: solid;
+        display: block;
+      }
 
-        .user-info {
-            margin: 20px 5px auto 5px;
-        }
-
-        h1,
-        h5 {
-            display: inline;
-        }
-
-        .order {
-            text-align: center;
-        }
-
-        .orders {
-            margin-top: 100px;
-        }
+      #posting-box {
+        display: none;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="wrap">
-        <div class="img"></div>
-        <div class="info">
-            <h1>읽은 책에 대해 말씀해주세요.</h1>
-            <p>다른 사람을 위해 리뷰를 남겨주세요! 다 같이 좋은 책을 읽는다면 다 함께 행복해질 수 있지 않을까요?</p>
+      <div class="jumbotron">
+        <h1 class="display-4">나홀로 링크 메모장!</h1>
+        <p class="lead">
+          중요한 링크를 저장해두고, 나중에 볼 수 있는 공간입니다
+        </p>
+        <hr class="my-4" />
+        <p class="lead">
+          <a
+            id="btn-posting-box"
+            onclick="openclose()"
+            class="btn btn-primary btn-lg"
+            href="#"
+            role="button"
+            >포스팅박스 열기</a
+          >
+        </p>
+      </div>
+      <div class="form-post" id="posting-box">
+        <div>
+          <div class="form-group">
+            <label for="exampleFormControlInput1">아티클 URL</label>
+            <input id="posting-url" class="form-control" placeholder="" />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">간단 코멘트</label>
+            <textarea
+              id="posting-comment"
+              class="form-control"
+              rows="2"
+            ></textarea>
+          </div>
+          <button onclick="posting()" class="btn btn-primary">기사저장</button>
         </div>
-        <div class="info">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">제목</span>
-                </div>
-                <input type="text" class="form-control" id="title" aria-describedby="basic-addon3">
-            </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">저자</span>
-                </div>
-                <input type="text" class="form-control" id="author" aria-describedby="basic-addon3">
-            </div>
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">리뷰</span>
-                </div>
-                <textarea class="form-control" aria-describedby="basic-addon3" name="bookReview" id="review" cols="30"
-                    rows="5" placeholder="140자까지 입력할 수 있습니다." onkeyup="is_long(this)"></textarea>
-            </div>
-            <div class="order">
-                <button onclick="make_review()" type="button" class="btn btn-primary">리뷰 작성하기</button>
-            </div>
+      </div>
+      <div class="card-columns" id="cards-box">
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
         </div>
-        <div class="orders">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">제목</th>
-                        <th scope="col">저자</th>
-                        <th scope="col">리뷰</th>
-                    </tr>
-                </thead>
-                <tbody id="orders-box">
-                    <tr>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td>@mdo</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">여기 기사 제목이 들어가죠</h5>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
         </div>
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">여기 기사 제목이 들어가죠</h5>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">여기 기사 제목이 들어가죠</h5>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">여기 기사 제목이 들어가죠</h5>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
+        </div>
+        <div class="card">
+          <img
+            class="card-img-top"
+            src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
+            alt="Card image cap"
+          />
+          <div class="card-body">
+            <h5 class="card-title">여기 기사 제목이 들어가죠</h5>
+            <p class="card-text">
+              기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록
+              하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
+            </p>
+            <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
